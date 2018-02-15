@@ -1,7 +1,6 @@
 'Models for flaskbb-plugin-subby'
 
 # stdlib
-from base64 import encodestring
 from uuid import uuid4
 # 3rd party
 from flaskbb.extensions import db
