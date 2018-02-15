@@ -97,13 +97,7 @@ def rss(key):
     'Personalized RSS feed'
 
     settings = SubscriptionSettings.query.filter(
-        SubscriptionSettings.rss_key == key).first()
-
-    if not settings:
-        abort(404)
-
-        return
-
+        SubscriptionSettings.rss_key == key).first_or_404()
     user_id = settings.user_id
     user = User.query.get(user_id)
     categories = Category.get_all(user=real(user))
