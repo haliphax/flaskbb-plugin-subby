@@ -7,6 +7,7 @@ from flask_babelplus import gettext as _
 from flask_login import current_user, login_required
 from flaskbb.extensions import db
 from flaskbb.forum.models import Category, Post, Topic, topictracker
+from flaskbb.user.models import User
 from flaskbb.utils.helpers import real, render_template, register_view
 from flaskbb.utils.markup import markdown
 from sqlalchemy import text
@@ -104,7 +105,8 @@ def rss(key):
         return
 
     user_id = settings.user_id
-    categories = Category.get_all(user=real(current_user))
+    user = User.query.get(user_id)
+    categories = Category.get_all(user=real(user))
     allowed_forums = [r[0].id for r in [r for x, r in categories][0]]
     forums = [r.forum_id for r in Subscription.query.filter(
               (Subscription.user_id == user_id) &
@@ -120,7 +122,7 @@ def rss(key):
     feed = AtomFeed(_('Recent posts'), feed_url=request.url, url=url_root)
     posts = (Post.query.filter(Post.user_id != user_id)
              .join(Topic, Post.topic)
-             .filter(Topic.id.in_(tracked) | (Topic.forum_id.in_(forums)))
+             .filter(Topic.id.in_(tracked) | Topic.forum_id.in_(forums))
              .order_by(Post.date_created.desc())
              .limit(20)
              .all())
