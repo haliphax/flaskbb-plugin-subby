@@ -6,7 +6,7 @@ setup(
     name='flaskbb-plugin-subby',
     packages=find_packages('.'),
     include_package_data=True,
-    package_data={'': ['subby/templates',]},
+    package_data={'': ['subby/templates', 'subby/migrations']},
     version='1.0',
     author='haliphax',
     author_email='haliphax@github.com',
