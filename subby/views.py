@@ -145,5 +145,6 @@ def regen():
         SubscriptionSettings.user_id == current_user.id).first()
     settings.rss_key = None
     settings.save()
+    flash(_('Your RSS key has been regenerated'), 'success')
 
     return redirect(url_for('.manage'))
