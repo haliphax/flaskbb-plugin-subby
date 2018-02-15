@@ -78,8 +78,7 @@ class SubsManage(MethodView):
         'Get list of forums to choose from'
 
         return [
-            (category.title, [(forum.id, forum.title)
-                              for forum, forumsread in forums])
+            (category.title, [(forum.id, forum.title) for forum, _ in forums])
             for category, forums in Category.get_all(user=real(current_user))
         ]
 
