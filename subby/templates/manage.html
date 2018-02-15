@@ -3,18 +3,33 @@
 {% from theme('macros.html') import horizontal_field %}
 
 <div class="panel page-panel">
-    <div class="panel-heading page-head">
-        {% trans %}Subscription Settings{% endtrans %}
-    </div>
-    <div class="panel-body page-body">
-        <form class="form-horizontal" role="form" method="POST">
-            {{ form.hidden_tag() }}
-            {{ horizontal_field(form.email) }}
-            {{ horizontal_field(form.tracked_topics) }}
-            {{ horizontal_field(form.forums, multiple=True) }}
-            {{ horizontal_field(form.submit) }}
-        </form>
-    </div>
+	<div class="panel-heading page-head">
+		{% trans %}Subscription Settings{% endtrans %}
+	</div>
+	<div class="panel-body page-body">
+		<form class="form-horizontal" role="form" method="POST">
+			{{ form.hidden_tag() }}
+			{{ horizontal_field(form.email) }}
+			{{ horizontal_field(form.tracked_topics) }}
+			{{ horizontal_field(form.forums, multiple=True) }}
+			{{ horizontal_field(form.submit) }}
+		</form>
+		{% if rss_key %}
+		<div class="row">
+			<div class="col-xs-10 col-xs-offset-1">
+				<p>
+					Your personal RSS feed:
+
+					<a href="{{ url_for('.rss', key=rss_key) }}">
+						{{ rss_key }}
+					</a>
+
+					<a href="{{ url_for('.regen') }}" class="btn btn-xs btn-danger">Regenerate</a>
+				</p>
+			</div>
+		</div>
+		{% endif %}
+	</div>
 </div>
 
 {% endblock %}

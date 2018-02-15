@@ -1,7 +1,7 @@
 'Models for flaskbb-plugin-subby'
 
 # stdlib
-from base64 import encode
+from base64 import encodestring
 from uuid import uuid4
 # 3rd party
 from flaskbb.extensions import db
@@ -27,17 +27,20 @@ class SubscriptionSettings(db.Model, CRUDMixin):
     #: Settings owner
     user = db.relationship('User', lazy='joined', foreign_keys=(user_id,))
 
-    def regenerate_rss_key(self):
-        'Regenerates unique RSS key'
-
-        self.rss_key = encode(str(uuid4()))
-        self.save()
-
     def save(self):
         'Saves subscription settings'
 
+        if not self.rss_key:
+            self.rss_key = SubscriptionSettings._regenerate_rss_key()
+
         db.session.add(self)
         db.session.commit()
+
+    @staticmethod
+    def _regenerate_rss_key():
+        'Regenerates unique RSS key'
+
+        return str(uuid4())
 
 
 class Subscription(db.Model, CRUDMixin):
