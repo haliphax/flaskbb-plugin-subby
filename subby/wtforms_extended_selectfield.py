@@ -6,7 +6,7 @@ https://github.com/industrydive/wtforms_extended_selectfield
 Extended to handle 'selected' HTML element property for multiple values
 """
 
-from wtforms.fields import SelectField
+from wtforms.fields import SelectMultipleField
 from wtforms.validators import ValidationError
 from wtforms.widgets import HTMLString, html_params
 from cgi import escape
@@ -48,7 +48,7 @@ class ExtendedSelectWidget(Select):
         return HTMLString(''.join(html))
 
 
-class ExtendedSelectField(SelectField):
+class ExtendedSelectField(SelectMultipleField):
 
     """
     Add support of ``optgroup`` grouping to default WTForms' ``SelectField`` class.
@@ -73,7 +73,7 @@ class ExtendedSelectField(SelectField):
     but this is actually how Django does it too https://docs.djangoproject.com/en/dev/ref/models/fields/#choices
 
     """
-    widget = ExtendedSelectWidget()
+    widget = ExtendedSelectWidget(multiple=True)
 
     def pre_validate(self, form):
         """

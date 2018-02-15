@@ -56,26 +56,22 @@ class SubsManage(MethodView):
 
         form = SubsManageForm(request.form, obj=settings)
         form.forums.choices = self._get_choices()
+        Subscription.query.filter(
+            Subscription.user_id == current_user.id).delete()
+        db.session.commit()
+        forums = [form.forums.data]
 
-        if form.validate():
-            Subscription.query.filter(
-                Subscription.user_id == current_user.id).delete()
-            db.session.commit()
-            forums = [form.forums.data]
+        if type(form.forums.data) in (list, tuple):
+            forums = form.forums.data
+        elif form.forums.data is None:
+            forums = []
 
-            if type(form.forums.data) in (list, tuple):
-                forums = form.forums.data
-            elif form.forums.data is None:
-                forums = []
+        for forum_id in forums:
+            (Subscription(user_id=current_user.id, forum_id=forum_id)
+                .save())
 
-            for forum_id in forums:
-                (Subscription(user_id=current_user.id, forum_id=forum_id)
-                    .save())
-
-            form.populate_obj(settings)
-            settings.save()
-        else:
-            flash(_('Error updating subscription settings'), 'error')
+        form.populate_obj(settings)
+        settings.save()
 
         return redirect(url_for('.manage'))
 
