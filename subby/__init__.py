@@ -5,6 +5,7 @@ from os.path import dirname, join
 # 3rd party
 from flask import request
 from flask_babelplus import gettext as _
+from flask_login import current_user
 from flaskbb.email import send_async_email
 from flaskbb.forum.models import Topic, topictracker
 from flaskbb.user.models import User
@@ -64,7 +65,7 @@ def flaskbb_evt_after_post(post, is_new):
         author=post.user.username)
 
     for user in users:
-        categories = Category.get_all(user=real(current_user))
+        categories = Category.get_all(user=real(user))
         allowed_forums = [r[0].id for r in [r for x, r in categories][0]]
 
         if post.topic.forum_id not in allowed_forums:
