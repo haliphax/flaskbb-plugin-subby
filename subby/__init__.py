@@ -7,8 +7,9 @@ from flask import request
 from flask_babelplus import gettext as _
 from flask_login import current_user
 from flaskbb.email import send_async_email
-from flaskbb.forum.models import Topic, topictracker
+from flaskbb.forum.models import Category, Topic, topictracker
 from flaskbb.user.models import User
+from flaskbb.utils.helpers import real
 from flaskbb.utils.markup import markdown
 from sqlalchemy import text
 # local
