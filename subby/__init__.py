@@ -50,8 +50,9 @@ def flaskbb_evt_after_post(post, is_new):
         .filter(SubscriptionSettings.email)
         .all())
     tracked = (User.query.filter(User.id != current_user.id)
-        .join(SubscriptionSettings).filter(SubscriptionSettings.tracked_topics)
-        .filter(SubscriptionSettings.email)
+        .join(SubscriptionSettings)
+        .filter(SubscriptionSettings.tracked_topics
+            & SubscriptionSettings.email)
         .join(topictracker)
         .filter(text('topictracker.topic_id==' + str(post.topic_id)))
         .all())
