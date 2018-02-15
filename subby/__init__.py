@@ -54,8 +54,7 @@ def flaskbb_evt_after_post(post, is_new):
         .join(topictracker)
         .filter(text('topictracker.topic_id==' + str(post.topic_id)))
         .all())
-    emails = set([sub.user.email for sub in subs]
-                 + [user.email for user in tracked])
+    users = set([sub.user for sub in subs] + tracked)
     content = markdown.render(post.content)
     html_body = '{url}\n\n{content}'.format(url=url_root + post.url,
                                             content=content)
@@ -64,6 +63,12 @@ def flaskbb_evt_after_post(post, is_new):
         forum=post.topic.forum.title, title=post.topic.title,
         author=post.user.username)
 
-    for email in emails:
-        send_async_email(subject=subject, recipients=[email],
+    for user in users:
+        categories = Category.get_all(user=real(current_user))
+        allowed_forums = [r[0].id for r in [r for x, r in categories][0]]
+
+        if post.topic.forum_id not in allowed_forums:
+            continue
+
+        send_async_email(subject=subject, recipients=[user.email],
                          text_body=text_body, html_body=html_body)

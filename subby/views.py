@@ -104,9 +104,12 @@ def rss(key):
         return
 
     user_id = settings.user_id
+    categories = Category.get_all(user=real(current_user))
+    allowed_forums = [r[0].id for r in [r for x, r in categories][0]]
     forums = [r.forum_id for r in Subscription.query.filter(
-              Subscription.user_id == user_id).all()]
-    tracked = list([])
+              (Subscription.user_id == user_id) &
+              Subscription.forum_id.in_(allowed_forums)).all()]
+    tracked = []
 
     if settings.tracked_topics:
         tracked = [r.topic_id for r in db.session.query(topictracker).filter(
@@ -117,7 +120,7 @@ def rss(key):
     feed = AtomFeed(_('Recent posts'), feed_url=request.url, url=url_root)
     posts = (Post.query.filter(Post.user_id != user_id)
              .join(Topic, Post.topic)
-             .filter(Topic.id.in_(tracked) | Topic.forum_id.in_(forums))
+             .filter(Topic.id.in_(tracked) | (Topic.forum_id.in_(forums)))
              .order_by(Post.date_created.desc())
              .limit(20)
              .all())
