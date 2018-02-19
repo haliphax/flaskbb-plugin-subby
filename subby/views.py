@@ -72,6 +72,7 @@ class SubsManage(MethodView):
 
         form.populate_obj(settings)
         settings.save()
+        flash(_('Your subscription settings have been updated'), 'success')
 
         return redirect(url_for('.manage'))
 
