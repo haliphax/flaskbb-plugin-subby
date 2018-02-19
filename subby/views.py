@@ -97,7 +97,12 @@ def rss(key):
     user_id = settings.user_id
     user = User.query.get(user_id)
     categories = Category.get_all(user=real(user))
-    allowed_forums = [r[0].id for r in [r for x, r in categories][0]]
+    allowed_forums = []
+
+    for category, forums in categories:
+        for forum, forumsread in forums:
+            allowed_forums.append(forum.id)
+
     forums = [r.forum_id for r in Subscription.query.filter(
               (Subscription.user_id == user_id) &
               Subscription.forum_id.in_(allowed_forums)).all()]

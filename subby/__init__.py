@@ -1,6 +1,7 @@
 'Entry point for flaskbb-plugin-subby'
 
 # stdlib
+from logging import getLogger
 from os.path import dirname, join
 # 3rd party
 from flask import request
@@ -15,6 +16,8 @@ from sqlalchemy import text
 # local
 from .models import Subscription, SubscriptionSettings
 from .views import blueprint
+
+log = getLogger(__name__)
 
 
 def flaskbb_load_migrations():
@@ -68,9 +71,16 @@ def flaskbb_evt_after_post(post, is_new):
 
     for user in users:
         categories = Category.get_all(user=real(user))
-        allowed_forums = [r[0].id for r in [r for x, r in categories][0]]
+        allowed_forums = []
+
+        for category, forums in categories:
+            for forum, forumsread in forums:
+                allowed_forums.append(forum.id)
 
         if post.topic.forum_id not in allowed_forums:
+            log.warn('{user} is not allowed in forum {forum} (#{id})'
+                     .format(user=user.username, forum=post.topic.forum.title,
+                             id=post.topic.forum_id))
             continue
 
         send_async_email(subject=subject, recipients=[user.email],
