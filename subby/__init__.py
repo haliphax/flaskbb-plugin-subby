@@ -62,10 +62,10 @@ def flaskbb_event_after_post(post, is_new):
         .all())
     users = set([sub.user for sub in subs] + tracked)
     content = markdown.render(post.content)
-    html_body = '{url}\n\n{content}'.format(url=url_root + post.url,
-                                            content=content)
-    text_body = _('HTML message')
-    subject = _('New post in {forum}: {title} (by {author})').format(
+    html_body = u'{url}\n\n{content}'.format(url=url_root + post.url,
+                                             content=content)
+    text_body = _(u'HTML message')
+    subject = _(u'New post in {forum}: {title} (by {author})').format(
         forum=post.topic.forum.title, title=post.topic.title,
         author=post.user.username)
 
@@ -78,7 +78,7 @@ def flaskbb_event_after_post(post, is_new):
                 allowed_forums.append(forum.id)
 
         if post.topic.forum_id not in allowed_forums:
-            log.warn('{user} is not allowed in forum {forum} (#{id})'
+            log.warn(u'{user} is not allowed in forum {forum} (#{id})'
                      .format(user=user.username, forum=post.topic.forum.title,
                              id=post.topic.forum_id))
             continue
