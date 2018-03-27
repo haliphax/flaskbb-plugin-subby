@@ -62,12 +62,12 @@ def flaskbb_event_after_post(post, is_new):
         .all())
     users = set([sub.user for sub in subs] + tracked)
     content = markdown.render(post.content)
-    html_body = u'{url}\n\n{content}'.format(url=url_root + post.url,
-                                             content=content)
+    html_body = (u'{url}\n\n{author_label}: {author}\n\n{content}'
+                 .format(url=url_root + post.url, author_label=_(u'Author'),
+                         author=post.user.username, content=content))
     text_body = _(u'HTML message')
-    subject = _(u'New post in {forum}: {title} (by {author})').format(
-        forum=post.topic.forum.title, title=post.topic.title,
-        author=post.user.username)
+    subject = _(u'New post in {forum}: {title}').format(
+        forum=post.topic.forum.title, title=post.topic.title)
 
     for user in users:
         categories = Category.get_all(user=real(user))

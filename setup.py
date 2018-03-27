@@ -7,7 +7,7 @@ setup(
     packages=find_packages('.'),
     include_package_data=True,
     package_data={'': ['subby/templates', 'subby/migrations']},
-    version='1.0',
+    version='1.0.1',
     author='haliphax',
     author_email='haliphax@github.com',
     description='Adds RSS and email subscriptions for new posts',

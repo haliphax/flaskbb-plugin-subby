@@ -1,3 +1,4 @@
-graft subby/templates subby/migrations
+graft subby/templates
+graft subby/migrations
 
 global-exclude *.pyc __pycache__.keep
