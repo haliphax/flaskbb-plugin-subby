@@ -38,7 +38,7 @@ def flaskbb_load_blueprints(app):
     app.register_blueprint(blueprint, url_prefix='/subscription')
 
 
-def flaskbb_event_after_post(post, is_new):
+def flaskbb_event_post_save_after(post, is_new):
     'After-post hook'
 
     if not is_new:
